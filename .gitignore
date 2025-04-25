@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 # not include dataset
-./dataset-resized/
+dataset-resized/
 
 # Distribution / packaging
 .Python
