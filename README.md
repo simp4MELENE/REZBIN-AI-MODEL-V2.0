@@ -8,15 +8,23 @@ It references the [WasteNet](https://arxiv.org/pdf/2006.05873) paper as a guide 
 
 ## Setup
 Follow the steps below to properly set up our development environment.
-```bash
-> git clone https://github.com/Rezbin/ai-model-v2.0.git`
-> cd .\ai-model-v2.0
-> python -m venv .venv # create new virtual environment
-> pip install -r .\requirements.txt # install needed requirements
-> python -m ipykernel install --user --name=.venv --display-name "Rezbin AI Model (v2.0)" # create kernel 
 
-# Refresh you VSCode window by `CTRL + SHIFT + P`, and choose `Developer: Reload Window`
-# Choose the created kernel, and you are now ready to develop!
+```bash
+# 1. Clone the repository
+git clone https://github.com/Rezbin/ai-model-v2.0.git
+cd ai-model-v2.0
+
+# 2. Create a virtual environment
+python -m venv .venv
+
+# 3. Activate the virtual environment (PowerShell)
+.venv\Scripts\Activate.ps1
+
+# 4. Install required packages
+pip install -r requirements.txt
+
+# 5. Register a new Jupyter kernel for this environment
+python -m ipykernel install --user --name=.venv --display-name "Rezbin AI Model (v2.0)"
 ```
 
 ## Developers
