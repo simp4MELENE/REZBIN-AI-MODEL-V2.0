@@ -1,4 +1,4 @@
-torch==2.2.0
+torch==2.7.0
 opencv-python==4.9.0.80
 jupyter==1.1.1
 ipykernel==6.29.5
