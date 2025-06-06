@@ -12,8 +12,14 @@ PREPROCESS_TRANSFORM = transforms.Compose([
 ])
 
 # Load model
-@st.cache_resource
+@st.cache_resource # Warnings will persist if this decorator exists, and is both used by streamlit and fastapi
 def load_model(model_path: Path, num_class_labels: int, device):
+    """ Loads a PyTorch model for image classification 
+    Args:
+        model_path (Path): The path to the model to be loaded
+        num_class_labels (int): Number of classes to set to loaded model
+        device: The device where the model operates (CPU/GPU)
+    """
     model = model = models.mobilenet_v2(pretrained=True)
     num_features = model.classifier[1].in_features
     model.classifier[1] = nn.Linear(num_features, num_class_labels)
@@ -29,8 +35,8 @@ def load_model(model_path: Path, num_class_labels: int, device):
             model.load_state_dict(checkpoint['model_state_dict'])
             
         else:
-            model.load_state_dict(checkpoint) # Assume it's just the state_dict
-        model.eval() # Set the model to evaluation mode
+            model.load_state_dict(checkpoint)
+        model.eval()
         model.to(device)
         return model
 
