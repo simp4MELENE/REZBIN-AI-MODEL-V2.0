@@ -46,11 +46,29 @@ def main():
         
         prediction = prediction_label.upper()
 
-        st.success(f"Predicted Class: **{prediction}**")
-        
-        # TODO: Create a logic that generates a variety of points based on what class is predicted
-        sample_points = 0.5
-        st.info(f"You generated {sample_points} points for predictiong {prediction}") 
+        plasticPoints = 3
+        cardboardPoints = 2
+        metalPoints = 5
+        paperPoints = 1
+        point = 0
+        glassPoints = 0
+        trashPoints = 0
+
+        if(prediction == "METAL"):
+            point = metalPoints
+        elif(prediction == "PLASTIC"):
+            point = plasticPoints
+        elif(prediction == "CARDBOARD"):
+            point = cardboardPoints
+        elif(prediction == "PAPER"):
+            point = paperPoints
+        elif(prediction == "GLASS"):
+            point = glassPoints
+
+        elif(prediction == "TRASH"):
+            point = trashPoints
+
+        st.info(f"Image is: {prediction}. You earned {point} points.") 
         
         st.markdown("---")
         st.markdown("Developed by the Interns of Rezbin AI Engineers")
