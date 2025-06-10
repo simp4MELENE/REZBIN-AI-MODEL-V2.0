@@ -1,17 +1,39 @@
+
+
 import streamlit as st
 from PIL import Image
 import torch
 from pathlib import Path
+import requests
 from utils import PREPROCESS_TRANSFORM, load_model
 
-# Set const values
+# Constants
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-MODEL_PATH = Path("./models/MobileNetV2/mobilenetv2.pth")
+MODEL_PATH = Path("models/MobileNetV2/mobilenetv2.pth")
+MODEL_URL = "https://drive.google.com/uc?export=download&id=1gVVQVhOHKfA5S179M1E9VJnbMvzw9q_s"
 CLASS_LABELS = ['cardboard', 'glass', 'metal', 'paper', 'plastic', 'trash']
+
+# Function to download the model if it doesn't exist
+def download_model_if_needed(model_path, url):
+    if not model_path.exists():
+        st.info("Downloading model file. Please wait...")
+        model_path.parent.mkdir(parents=True, exist_ok=True)
+        response = requests.get(url)
+        if response.status_code == 200:
+            with open(model_path, 'wb') as f:
+                f.write(response.content)
+            st.success("Model downloaded successfully.")
+        else:
+            st.error("Failed to download model from Google Drive.")
+            st.stop()
 
 def main():
     st.set_page_config(page_title="Rezbin AI Trash Classifier", page_icon="♻️")
-    
+
+    # Ensure model is downloaded
+    download_model_if_needed(MODEL_PATH, MODEL_URL)
+
+    # Load model
     model = load_model(MODEL_PATH, len(CLASS_LABELS), DEVICE)
     
     if model is None:
@@ -25,7 +47,6 @@ def main():
         Upload an image of trash to classify it into one of the following categories:
         **Cardboard, Glass, Metal, Paper, Plastic, Trash**.
     """)
-    st.write("Upload an image of trash to classify it into one of the categories.")
 
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
@@ -46,31 +67,22 @@ def main():
         
         prediction = prediction_label.upper()
 
-        plasticPoints = 3
-        cardboardPoints = 2
-        metalPoints = 5
-        paperPoints = 1
-        point = 0
-        glassPoints = 0
-        trashPoints = 0
-
-        if(prediction == "METAL"):
-            point = metalPoints
-        elif(prediction == "PLASTIC"):
-            point = plasticPoints
-        elif(prediction == "CARDBOARD"):
-            point = cardboardPoints
-        elif(prediction == "PAPER"):
-            point = paperPoints
-        elif(prediction == "GLASS"):
-            point = glassPoints
-
-        elif(prediction == "TRASH"):
-            point = trashPoints
+        # Point system
+        points = {
+            "PLASTIC": 3,
+            "CARDBOARD": 2,
+            "METAL": 5,
+            "PAPER": 1,
+            "GLASS": 0,
+            "TRASH": 0
+        }
+        point = points.get(prediction, 0)
 
         st.info(f"Image is: {prediction}. You earned {point} points.") 
         
         st.markdown("---")
         st.markdown("Developed by the Interns of Rezbin AI Engineers")
+
 if __name__ == "__main__":
     main()
+
